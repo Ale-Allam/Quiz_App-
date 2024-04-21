@@ -1,0 +1,90 @@
+ {
+    "question": "Which month has 28 days?",
+    "options": ["February", "March", "April", "May"],
+    "answer": "February"
+  },
+  {
+    "question": "What is the opposite of 'up'?",
+    "options": ["Down", "Left", "Right", "Front"],
+    "answer": "Down"
+  },
+  {
+    "question": "How many sides does a triangle have?",
+    "options": ["Two", "Three", "Four", "Five"],
+    "answer": "Three"
+  },
+  {
+    "question": "What is the main ingredient in bread?",
+    "options": ["Flour", "Sugar", "Salt", "Water"],
+    "answer": "Flour"
+  },
+  {
+    "question": "Which animal barks?",
+    "options": ["Cat", "Dog", "Cow", "Horse"],
+    "answer": "Dog"
+  },
+  {
+    "question": "What is the opposite of 'hot'?",
+    "options": ["Cold", "Warm", "Freezing", "Cool"],
+    "answer": "Cold"
+  },
+  {
+    "question": "What is the capital of the United States?",
+    "options": ["New York City", "Los Angeles", "Chicago", "Washington D.C."],
+    "answer": "Washington D.C."
+  },
+  {
+    "question": "How many continents are there?",
+    "options": ["Three", "Four", "Five", "Seven"],
+    "answer": "Seven"
+  },
+  {
+    "question": "What is the largest planet in our solar system?",
+    "options": ["Earth", "Mars", "Jupiter", "Saturn"],
+    "answer": "Jupiter"
+  },
+  {
+    "question": "What is the color of grass?",
+    "options": ["Red", "Green", "Blue", "Yellow"],
+    "answer": "Green"
+  },
+  {
+    "question": "What comes after Tuesday?",
+    "options": ["Monday", "Wednesday", "Thursday", "Friday"],
+    "answer": "Wednesday"
+  },
+  {
+    "question": "What is the main ingredient in coffee?",
+    "options": ["Milk", "Sugar", "Water", "Coffee Beans"],
+    "answer": "Coffee Beans"
+  },
+  {
+    "question": "Which is the tallest animal?",
+    "options": ["Elephant", "Giraffe", "Horse", "Lion"],
+    "answer": "Giraffe"
+  },
+  {
+    "question": "What is the opposite of 'big'?",
+    "options": ["Small", "Large", "Huge", "Giant"],
+    "answer": "Small"
+  },
+  {
+    "question": "What is the currency of Japan?",
+    "options": ["Euro", "Yen", "Dollar", "Pound"],
+    "answer": "Yen"
+  },
+  {
+    "question": "What is the color of a banana?",
+    "options": ["Red", "Green", "Blue", "Yellow"],
+    "answer": "Yellow"
+  },
+  {
+    "question": "What is the chemical symbol for water?",
+    "options": ["O2", "H2O", "CO2", "NaCl"],
+    "answer": "H2O"
+  },
+  {
+    "question": "What is the opposite of 'day'?",
+    "options": ["Night", "Morning", "Evening", "Afternoon"],
+    "answer": "Night"
+  }

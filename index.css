@@ -1,3 +1,12 @@
+:root {
+  --background-color: #001F3D;
+  --text-color: #CCB880;
+  --accent-color: #9C4104;
+  --primary-color: #282E56;
+  --secondary-color: #ffe6a3;
+  --transparent-primary-color: #282e5678;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -5,8 +14,8 @@
 }
 
 body {
-  background-color: #001F3D;
-  color: #CCB880;
+  background-color: var(--background-color);
+  color: var(--text-color);
   font-family: 'Azeret Mono', monospace;
 }
 
@@ -16,10 +25,10 @@ ul {
 }
 
 .svg-container {
-  width: 150px;
-  height: 80px;
+  width: 100px;
+  height: 30px;
   position: relative;
-  margin-top: 15px;
+  margin: 20px;
 }
 
 .svg-container img {
@@ -33,7 +42,7 @@ ul {
 h1 {
   font-size: 61px;
   padding: 0 15px;
-  color: #9C4104;
+  color: var(--accent-color);
 }
 
 .box {
@@ -63,14 +72,13 @@ h1 {
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
-  background-color: #282E56;
+  background-color: var(--primary-color);
   cursor: pointer;
   transition: .3s;
   margin: 10px;
 }
 
 .options li:hover {
-  /* color: #9C4104; */
-  color: #ffe6a3;
-  background-color: #282e5678;
+  color: var(--accent-color);
+  background-color: var(--transparent-primary-color);
 }
