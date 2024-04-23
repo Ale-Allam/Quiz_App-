@@ -14,15 +14,38 @@
 }
 
 body {
-  background-color: var(--background-color);
+  /* background-color: var(--background-color); */
   color: var(--text-color);
   font-family: 'Azeret Mono', monospace;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-ul {
-  list-style: none;
-  padding: 0 20px;
+::selection {
+  background-color: #9C4104;
+  color: gold;
 }
+
+.questions-app-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  /* align-items: center; */
+}
+
+.questions-app-start div {
+  margin: 20px 0;
+}
+
+.questions-app-start label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+
 
 .svg-container {
   width: 100px;
@@ -37,48 +60,4 @@ ul {
   left: -35px;
   top: 50%;
   transform: translate(0%, -50%);
-}
-
-h1 {
-  font-size: 61px;
-  padding: 0 15px;
-  color: var(--accent-color);
-}
-
-.box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  border-radius: 10px;
-  margin: 100px auto;
-  text-align: center;
-}
-
-.question {
-  font-size: 23px;
-}
-
-.options {
-  flex-wrap: wrap;
-  font-size: 21px;
-  margin-top: 40px;
-  font-weight: 900;
-  min-width: 300px;
-}
-
-.options li {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  background-color: var(--primary-color);
-  cursor: pointer;
-  transition: .3s;
-  margin: 10px;
-}
-
-.options li:hover {
-  color: var(--accent-color);
-  background-color: var(--transparent-primary-color);
 }

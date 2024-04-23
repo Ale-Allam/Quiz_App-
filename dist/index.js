@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const category = document.getElementById("category");
-const questionsNumber = (document.getElementById("questionsNumber"));
-const questionDefcult = document.getElementById("defcult");
+const questionsNumber = document.getElementById("questionsNumber");
+const questionDifficulty = document.getElementById("defcult");
 const formSubmit = document.getElementById("submitApp");
 function fetchQuestions(amount, category, difficulty) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,6 @@ function fetchCategories() {
                 throw new Error("Network response was not ok");
             }
             const data = yield response.json();
-            console.log(data);
             return data.trivia_categories;
         }
         catch (error) {
@@ -61,4 +60,69 @@ function populateCategories() {
     });
 }
 populateCategories();
+const randomBTN = document.getElementById("random");
+const answerOptionsDiv = document.getElementById("answerOptions");
+const questionDiv = document.getElementById("question-request");
+let num = 0;
+let questionsData = null;
+formSubmit.addEventListener("submit", function (e) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        e.preventDefault();
+        formSubmit.style.display = "none";
+        let getCategory = category.options[category.selectedIndex].dataset.categoryid;
+        let getNumberOfQuestions = questionsNumber.value;
+        let getQuestionsDifficulty = questionDifficulty.value;
+        const theDATA = yield fetchQuestions(getNumberOfQuestions, getCategory || "", getQuestionsDifficulty);
+        questionsData = (_a = theDATA === null || theDATA === void 0 ? void 0 : theDATA.results) !== null && _a !== void 0 ? _a : [];
+        displayQuestion();
+    });
+});
+function displayQuestion() {
+    if (questionsData && questionsData.length > num) {
+        const getQuestion = questionsData[num].question;
+        const getAnswers = [
+            ...questionsData[num].incorrect_answers,
+            questionsData[num].correct_answer,
+        ];
+        appendQandA(getQuestion, getAnswers);
+    }
+    else {
+        console.log("No more questions available.");
+    }
+}
+function appendQandA(question, answers) {
+    questionDiv.innerHTML = "";
+    answerOptionsDiv.innerHTML = "";
+    questionDiv.innerHTML = question;
+    answers.forEach((option, index) => {
+        const radioButton = document.createElement("input");
+        radioButton.type = "radio";
+        radioButton.id = `option${index + 1}`;
+        radioButton.name = "sword";
+        radioButton.value = option;
+        const label = document.createElement("label");
+        label.htmlFor = `option${index + 1}`;
+        label.textContent = option;
+        const div = document.createElement("div");
+        div.append(radioButton, label);
+        answerOptionsDiv.appendChild(div);
+    });
+}
+randomBTN.onclick = () => {
+    const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
+    const correctAnswer = questionsData && questionsData[num]
+        ? questionsData[num].correct_answer
+        : "";
+    if (radioButtons.length > 0) {
+        const selectedValue = radioButtons[0].value;
+        if (correctAnswer === selectedValue) {
+            num++;
+            displayQuestion();
+        }
+        else {
+            console.log("no");
+        }
+    }
+};
 //# sourceMappingURL=index.js.map

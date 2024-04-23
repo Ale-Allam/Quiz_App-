@@ -14,28 +14,90 @@
   <!-- logo -->
   <link rel="icon" href="logo.svg" type="image/svg+xml">
 </head>
+<style>
+  select {
+    padding: 10px;
+    /* Adjust padding */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 200px;
+    /* Adjust width as needed */
+    -webkit-appearance: none;
+    /* Removes default arrow for WebKit browsers */
+    -moz-appearance: none;
+    /* Removes default arrow for Firefox */
+    appearance: none;
+    /* Removes default arrow for other browsers */
+    background: url('dropdown-arrow.png') no-repeat right center;
+    /* Custom arrow */
+    background-size: 20px;
+    /* Adjust arrow size */
+    cursor: pointer;
+  }
+
+  /* Styling the options */
+  select option {
+    padding: 8px;
+    /* Adjust padding */
+    margin: 2px;
+    /* Adjust margin */
+    font-size: 14px;
+    /* Adjust font size */
+    font-family: Arial, sans-serif;
+    /* Change font family */
+    color: #333;
+    /* Change text color */
+    background-color: #f9f9f9;
+  }
+
+  /* Styling hover effect */
+  select option:hover {
+    background-color: #e0e0e0;
+    color: #000;
+    /* Change text color on hover */
+  }
+</style>
 
 <body>
-  <form id="submitApp" action="">
-    <label for="category">Select a trivia category:</label>
-    <select id="category" name="category">
-    </select>
-    <label for="defcult">Select Defcult:</label>
-    <select id="defcult" name="defcult">
-      <option value="easy">Easy</option>
-      <option value="medium">Medium</option>
-      <option value="hard">Hard</option>
-      <!-- <option value="easy">medi</option> -->
-    </select>
-    <input type="number" id="questionsNumber" value="0" min="0" max="25" step="5">
+
+  <form class="questions-app-start" id="submitApp" action="">
+    <div>
+      <label for="category">Questions category:</label>
+      <select id="category" name="category">
+      </select>
+    </div>
+
+    <div>
+      <label for="defcult">Defcult:</label>
+      <select id="defcult" name="defcult">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+
+    <div>
+      <input type="number" id="questionsNumber" value="5" min="0" max="25" step="5">
+
+    </div>
     <button type="submit">
       Start
     </button>
   </form>
 
+  <button id="random">CLICK</button>
 
-  <!-- <a class="elzero" href="https://elzero.org/">elzero</a> -->
+  <form id="quizForm">
+    <h2>Quiz Question</h2>
+    <p id="question-request"></p>
+    <div id="answerOptions"></div>
+    <button type="submit">Submit</button>
+  </form>
+
   <script src="dist/index.js"></script>
+
+
 </body>
 
 </html>
