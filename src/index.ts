@@ -8,6 +8,9 @@ const questionDifficulty = document.getElementById(
 ) as HTMLSelectElement; // Select dropdown for question difficulty
 const formSubmit = document.getElementById("submitApp") as HTMLFormElement; // Form submit button
 
+const playAgain = document.getElementById("play-again") as HTMLButtonElement;
+
+let gameOverOrNot: boolean = false;
 // Define TriviaQuestion interface
 interface TriviaQuestion {
   category: string;
@@ -26,12 +29,20 @@ async function fetchQuestions(
 ): Promise<{ results: TriviaQuestion[] } | null> {
   // API URL based on parameters
   const apiUrl = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=multiple`;
+  // https://opentdb.com/api.php?amount=10&difficulty=hard&type=multiple
 
   try {
     // Fetch data from API
     const response = await fetch(apiUrl);
-    const data = await response.json();
-    return data;
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      setTimeout(() => {
+        location.reload();
+      }, 5000);
+      throw new Error("Parameter is not a number!");
+    }
   } catch (error) {
     // Handle errors
     console.error("Error fetching data:", error);
@@ -86,7 +97,7 @@ async function populateCategories() {
 populateCategories();
 
 // Get random button element
-const randomBTN = document.getElementById("random") as HTMLButtonElement;
+const quizForm = document.getElementById("submit-answer") as HTMLButtonElement;
 
 // Get answer options and question elements
 const answerOptionsDiv = document.getElementById(
@@ -96,14 +107,20 @@ const questionDiv = document.getElementById(
   "question-request"
 ) as HTMLDivElement;
 
+const loadingGame = document.getElementsByClassName(
+  "loading"
+)[0] as HTMLDivElement;
+
 // Initialize variables
 let num: number = 0;
 let questionsData: TriviaQuestion[] | null = null;
 
 // Event listener for form submission
 formSubmit.addEventListener("submit", async function (e) {
+  num = 0;
   e.preventDefault();
   formSubmit.style.display = "none"; // Hide form after submission
+  loadingGame.style.display = "block"; // Show loading
 
   // Get selected category, number of questions, and difficulty
   let getCategory: string | undefined =
@@ -118,7 +135,11 @@ formSubmit.addEventListener("submit", async function (e) {
     getQuestionsDifficulty
   );
   questionsData = theDATA?.results ?? []; // Store fetched questions data
-  displayQuestion(); // Display the first question
+  if (questionsData.length > 0) {
+    quizForm.style.display = "block"; // Show submission
+    displayQuestion(); // Display the first question
+  }
+  // console.log(questionsData);
 });
 
 // Function to display a question
@@ -131,9 +152,20 @@ function displayQuestion(): void {
       questionsData[num].correct_answer,
     ];
     // Display question and answers
+    if (answerOptionsDiv) {
+      loadingGame.style.display = "none";
+    }
     appendQandA(getQuestion, getAnswers);
+    console.log(questionsData.length);
+    console.log(num);
+  } else if (questionsData.length === 0) {
+    // QAContainer.textContent = `<h1>GAME IS.....O V E R</h1>`;
+    questionDiv.innerHTML = "Error"; // Clear previous question
   } else {
-    console.log("No more questions available.");
+    quizForm.style.display = "none";
+    playAgain.style.display = "block";
+    questionDiv.innerHTML = "GAME IS.....O V E R"; // Clear previous question
+    answerOptionsDiv.innerHTML = ""; // Clear previous answers
   }
 }
 
@@ -160,14 +192,31 @@ function appendQandA(question, answers) {
     // answerOptionsDiv.appendChild();
 
     const div = document.createElement("div");
-
-    div.append(radioButton, label);
-    answerOptionsDiv.appendChild(div);
+    div.classList.add(
+      "input-answer",
+      "input-correct-answer",
+      "input-wrong-answer"
+    );
+    div.append(label);
+    answerOptionsDiv.append(radioButton, div);
   });
 }
 
 // Event listener for random button click
-randomBTN.onclick = (): void => {
+quizForm.onclick = (e): void => {
+  e.preventDefault();
+  // Get the checked radio input element
+  const checkedRadio = document.querySelector('input[type="radio"]:checked');
+
+  // Get the next sibling element with the class .input-answer
+  const inputAnswer = checkedRadio.nextElementSibling;
+
+  // Set the background of the input-answer element to transparent
+  inputAnswer.style.background = "transparent";
+  nextQuestion();
+};
+const QAContainer = document.getElementById("q-a-container") as HTMLDivElement;
+function nextQuestion(): void {
   // Get selected radio button
   const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
 
@@ -179,15 +228,52 @@ randomBTN.onclick = (): void => {
 
   // Check if an option is selected
   if (radioButtons.length > 0) {
-    const selectedValue = (radioButtons[0] as HTMLInputElement).value;
+    const selectedOption = radioButtons[0] as HTMLInputElement;
+
     // Check if selected option is correct
-    if (correctAnswer === selectedValue) {
-      num++; // Move to next question
-      displayQuestion(); // Display next question
+    if (correctAnswer === selectedOption.value) {
+      if (selectedOption.nextElementSibling) {
+        selectedOption.nextElementSibling.classList.add(
+          "input-correct-answer-clicked"
+        );
+      }
+      setTimeout(() => {
+        num++; // Move to next question
+        displayQuestion(); // Display next question
+      }, 1000);
     } else {
       console.log("no"); // Incorrect answer
+      if (selectedOption.nextElementSibling) {
+        selectedOption.nextElementSibling.classList.add(
+          "input-wrong-answer-clicked"
+        );
+      }
     }
   }
-};
+}
 
-// const quizForm = document.getElementById("quizForm") as HTMLFormElement;
+playAgain.onclick = function () {
+  formSubmit.style.display = "block";
+  playAgain.style.display = "none";
+  questionDiv.innerHTML = "";
+};
+// let timer = 0;
+// const displayTimer = document.getElementById("timer") as HTMLHeadingElement;
+
+// // Update the timer display
+
+// // Interval handler function
+// function intervalHandler() {
+//   // Increment the timer
+//   timer++;
+//   // Update the timer display
+//   displayTimer.innerHTML = timer.toString();
+// }
+
+// // Set interval to call the intervalHandler function every second (1000 milliseconds)
+// const intervalId = setInterval(intervalHandler, 1000);
+
+// // Example of where to stop the interval
+// setTimeout(() => {
+//   clearInterval(intervalId); // Stop the interval after 10 seconds
+// }, 10000);

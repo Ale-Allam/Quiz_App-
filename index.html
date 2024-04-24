@@ -10,66 +10,26 @@
   <!-- google fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
   <!-- logo -->
   <link rel="icon" href="logo.svg" type="image/svg+xml">
 </head>
 <style>
-  select {
-    padding: 10px;
-    /* Adjust padding */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 200px;
-    /* Adjust width as needed */
-    -webkit-appearance: none;
-    /* Removes default arrow for WebKit browsers */
-    -moz-appearance: none;
-    /* Removes default arrow for Firefox */
-    appearance: none;
-    /* Removes default arrow for other browsers */
-    background: url('dropdown-arrow.png') no-repeat right center;
-    /* Custom arrow */
-    background-size: 20px;
-    /* Adjust arrow size */
-    cursor: pointer;
-  }
 
-  /* Styling the options */
-  select option {
-    padding: 8px;
-    /* Adjust padding */
-    margin: 2px;
-    /* Adjust margin */
-    font-size: 14px;
-    /* Adjust font size */
-    font-family: Arial, sans-serif;
-    /* Change font family */
-    color: #333;
-    /* Change text color */
-    background-color: #f9f9f9;
-  }
 
-  /* Styling hover effect */
-  select option:hover {
-    background-color: #e0e0e0;
-    color: #000;
-    /* Change text color on hover */
-  }
 </style>
 
 <body>
-
+  <h2 id="timer"></h2>
   <form class="questions-app-start" id="submitApp" action="">
     <div>
-      <label for="category">Questions category:</label>
+      <!-- <label for="category">Questions category:</label> -->
       <select id="category" name="category">
       </select>
     </div>
 
     <div>
-      <label for="defcult">Defcult:</label>
+      <!-- <label for="defcult">Defcult:</label> -->
       <select id="defcult" name="defcult">
         <option value="easy">Easy</option>
         <option value="medium">Medium</option>
@@ -86,15 +46,16 @@
     </button>
   </form>
 
-  <button id="random">CLICK</button>
 
-  <form id="quizForm">
-    <h2>Quiz Question</h2>
-    <p id="question-request"></p>
-    <div id="answerOptions"></div>
-    <button type="submit">Submit</button>
+  <form class="quizForm" id="quizForm">
+    <div id="q-a-container">
+      <p class="question-request" id="question-request"></p>
+      <div id="answerOptions"></div>
+    </div>
+    <button class="submit-answer" id="submit-answer">Submit Answer</button>
   </form>
-
+  <button class="play-again" id="play-again">Play Again!</button>
+  <div class="loading"></div>
   <script src="dist/index.js"></script>
 
 
