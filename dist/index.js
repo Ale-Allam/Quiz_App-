@@ -9,12 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const category = document.getElementById("category");
-const questionsNumber = document.getElementById("questionsNumber");
-const questionDifficulty = document.getElementById("defcult");
 const formSubmit = document.getElementById("submitApp");
 const playAgain = document.getElementById("play-again");
+const quizForm = document.getElementById("submit-answer");
+const QAContainer = document.getElementById("q-a-container");
+const questionsNumber = document.getElementById("questionsNumber");
+const questionDifficulty = document.getElementById("defcult");
+const answerOptionsDiv = document.getElementById("answerOptions");
+const questionDiv = document.getElementById("question-request");
+const loadingGame = document.getElementsByClassName("loading")[0];
+const spansCorrectIncorrect = document.getElementById("question-spans-container");
+const spans = document.getElementById("spans");
 let gameOverOrNot = false;
-function fetchQuestions(amount, category, difficulty) {
+let num = 0;
+let questionsData = null;
+function fetchQuestions(amount, category = "9", difficulty) {
     return __awaiter(this, void 0, void 0, function* () {
         const apiUrl = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=multiple`;
         try {
@@ -70,30 +79,56 @@ function populateCategories() {
     });
 }
 populateCategories();
-const quizForm = document.getElementById("submit-answer");
-const answerOptionsDiv = document.getElementById("answerOptions");
-const questionDiv = document.getElementById("question-request");
-const loadingGame = document.getElementsByClassName("loading")[0];
-let num = 0;
-let questionsData = null;
+function onStartQuizz() {
+    spans.style.opacity = "1";
+    formSubmit.style.display = "none";
+    loadingGame.style.display = "block";
+}
 formSubmit.addEventListener("submit", function (e) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         num = 0;
         e.preventDefault();
-        formSubmit.style.display = "none";
-        loadingGame.style.display = "block";
+        onStartQuizz();
         let getCategory = category.options[category.selectedIndex].dataset.categoryid;
         let getNumberOfQuestions = questionsNumber.value;
         let getQuestionsDifficulty = questionDifficulty.value;
         const theDATA = yield fetchQuestions(getNumberOfQuestions, getCategory || "", getQuestionsDifficulty);
         questionsData = (_a = theDATA === null || theDATA === void 0 ? void 0 : theDATA.results) !== null && _a !== void 0 ? _a : [];
+        console.log(questionsData);
         if (questionsData.length > 0) {
             quizForm.style.display = "block";
+            const num = questionsData.length;
+            const numArray = Array.from({ length: num });
+            numArray.forEach(() => {
+                const span = document.createElement("span");
+                span.classList.add("sp");
+                spans.appendChild(span);
+            });
             displayQuestion();
         }
     });
 });
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+function resetGame() {
+    spans.classList.add("scale-spans");
+    quizForm.style.display = "none";
+    playAgain.style.display = "block";
+    questionDiv.innerHTML = "GAME IS.....O V E R";
+    answerOptionsDiv.innerHTML = "";
+    setTimeout(() => {
+        spans.style.opacity = "0";
+        setTimeout(() => {
+            spans.classList.remove("scale-spans");
+        }, 1000);
+    }, 2000);
+}
 function displayQuestion() {
     if (questionsData && questionsData.length > num) {
         const getQuestion = questionsData[num].question;
@@ -101,28 +136,30 @@ function displayQuestion() {
             ...questionsData[num].incorrect_answers,
             questionsData[num].correct_answer,
         ];
+        let shuveldAnswers = shuffleArray(getAnswers);
         if (answerOptionsDiv) {
             loadingGame.style.display = "none";
         }
-        appendQandA(getQuestion, getAnswers);
-        console.log(questionsData.length);
-        console.log(num);
+        appendQandA(getQuestion, shuveldAnswers);
     }
-    else if (questionsData.length === 0) {
+    else if ((questionsData === null || questionsData === void 0 ? void 0 : questionsData.length) === 0) {
         questionDiv.innerHTML = "Error";
     }
     else {
-        quizForm.style.display = "none";
-        playAgain.style.display = "block";
-        questionDiv.innerHTML = "GAME IS.....O V E R";
-        answerOptionsDiv.innerHTML = "";
+        resetGame();
     }
+}
+function decodeHTMLEntities(text) {
+    const element = document.createElement("div");
+    element.innerHTML = text;
+    return element.textContent || element.innerText;
 }
 function appendQandA(question, answers) {
     questionDiv.innerHTML = "";
     answerOptionsDiv.innerHTML = "";
-    questionDiv.innerHTML = question;
+    questionDiv.innerHTML = decodeHTMLEntities(question);
     answers.forEach((option, index) => {
+        const decodedOption = decodeHTMLEntities(option);
         const radioButton = document.createElement("input");
         radioButton.type = "radio";
         radioButton.id = `option${index + 1}`;
@@ -130,7 +167,7 @@ function appendQandA(question, answers) {
         radioButton.value = option;
         const label = document.createElement("label");
         label.htmlFor = `option${index + 1}`;
-        label.textContent = option;
+        label.textContent = decodedOption;
         const div = document.createElement("div");
         div.classList.add("input-answer", "input-correct-answer", "input-wrong-answer");
         div.append(label);
@@ -139,39 +176,63 @@ function appendQandA(question, answers) {
 }
 quizForm.onclick = (e) => {
     e.preventDefault();
-    const checkedRadio = document.querySelector('input[type="radio"]:checked');
-    const inputAnswer = checkedRadio.nextElementSibling;
-    inputAnswer.style.background = "transparent";
+    styleAfterAnswer();
     nextQuestion();
 };
-const QAContainer = document.getElementById("q-a-container");
 function nextQuestion() {
+    let getSpans = document.querySelectorAll(".sp");
     const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
     const correctAnswer = questionsData && questionsData[num]
         ? questionsData[num].correct_answer
         : "";
+    function nextQuestionSetTimeOut(result) {
+        setTimeout(() => {
+            if (getSpans) {
+                getSpans[num].classList.add(result);
+            }
+            setTimeout(() => {
+                num++;
+                displayQuestion();
+                answerOptionsDiv.style.opacity = "1";
+                questionDiv.style.transform = "translateX(0%)";
+            }, 1000);
+            answerOptionsDiv.style.opacity = "0";
+            questionDiv.style.transform = "translateX(-200%)";
+        }, 1000);
+    }
     if (radioButtons.length > 0) {
         const selectedOption = radioButtons[0];
         if (correctAnswer === selectedOption.value) {
             if (selectedOption.nextElementSibling) {
                 selectedOption.nextElementSibling.classList.add("input-correct-answer-clicked");
             }
-            setTimeout(() => {
-                num++;
-                displayQuestion();
-            }, 1000);
+            nextQuestionSetTimeOut("sp-correct");
         }
         else {
             console.log("no");
             if (selectedOption.nextElementSibling) {
                 selectedOption.nextElementSibling.classList.add("input-wrong-answer-clicked");
             }
+            nextQuestionSetTimeOut("sp-incorrect");
         }
     }
 }
-playAgain.onclick = function () {
+function styleAfterAnswer() {
+    const checkedRadio = document.querySelector('input[type="radio"]:checked');
+    if (checkedRadio) {
+        const inputAnswer = checkedRadio.nextElementSibling;
+        if (inputAnswer) {
+            inputAnswer.style.background = "transparent";
+        }
+    }
+}
+function cleanForNewGame() {
+    spans.innerHTML = "";
     formSubmit.style.display = "block";
     playAgain.style.display = "none";
     questionDiv.innerHTML = "";
+}
+playAgain.onclick = function () {
+    cleanForNewGame();
 };
 //# sourceMappingURL=index.js.map

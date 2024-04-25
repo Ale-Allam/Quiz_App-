@@ -1,16 +1,35 @@
-// Get DOM elements
-const category = document.getElementById("category") as HTMLSelectElement; // Select dropdown for category
+// Get DOM elements:
+// Select dropdown for category
+const category = document.getElementById("category") as HTMLSelectElement;
+const formSubmit = document.getElementById("submitApp") as HTMLFormElement;
+const playAgain = document.getElementById("play-again") as HTMLButtonElement;
+const quizForm = document.getElementById("submit-answer") as HTMLButtonElement;
+const QAContainer = document.getElementById("q-a-container") as HTMLDivElement;
 const questionsNumber = document.getElementById(
   "questionsNumber"
-) as HTMLInputElement; // Input field for number of questions
+) as HTMLInputElement;
+//
 const questionDifficulty = document.getElementById(
   "defcult"
-) as HTMLSelectElement; // Select dropdown for question difficulty
-const formSubmit = document.getElementById("submitApp") as HTMLFormElement; // Form submit button
+) as HTMLSelectElement;
+//
+const answerOptionsDiv = document.getElementById(
+  "answerOptions"
+) as HTMLDivElement;
+//
+const questionDiv = document.getElementById(
+  "question-request"
+) as HTMLDivElement;
+//
+const loadingGame = document.getElementsByClassName(
+  "loading"
+)[0] as HTMLDivElement;
+//
+const spansCorrectIncorrect = document.getElementById(
+  "question-spans-container"
+) as HTMLDivElement;
+const spans = document.getElementById("spans") as HTMLDivElement;
 
-const playAgain = document.getElementById("play-again") as HTMLButtonElement;
-
-let gameOverOrNot: boolean = false;
 // Define TriviaQuestion interface
 interface TriviaQuestion {
   category: string;
@@ -21,10 +40,19 @@ interface TriviaQuestion {
   type: string;
 }
 
+// Variabels
+let gameOverOrNot: boolean = false;
+// Initialize variables
+let num: number = 0;
+let questionsData: TriviaQuestion[] | null = null;
+
+// *
+// *
+// *
 // Function to fetch trivia questions from API
 async function fetchQuestions(
   amount: string,
-  category: string,
+  category: string = "9",
   difficulty: string
 ): Promise<{ results: TriviaQuestion[] } | null> {
   // API URL based on parameters
@@ -49,13 +77,17 @@ async function fetchQuestions(
     return null;
   }
 }
-
+// *
+// *
+// *
 // Define Category interface
 interface Category {
   name: string;
   id: string;
 }
-
+// *
+// *
+// *
 // Function to fetch trivia categories from API
 async function fetchCategories(): Promise<Category[]> {
   try {
@@ -72,7 +104,9 @@ async function fetchCategories(): Promise<Category[]> {
     return [];
   }
 }
-
+// *
+// *
+// *
 // Function to populate categories dropdown
 async function populateCategories() {
   try {
@@ -95,32 +129,22 @@ async function populateCategories() {
 
 // Call function to populate categories dropdown
 populateCategories();
-
-// Get random button element
-const quizForm = document.getElementById("submit-answer") as HTMLButtonElement;
-
-// Get answer options and question elements
-const answerOptionsDiv = document.getElementById(
-  "answerOptions"
-) as HTMLDivElement;
-const questionDiv = document.getElementById(
-  "question-request"
-) as HTMLDivElement;
-
-const loadingGame = document.getElementsByClassName(
-  "loading"
-)[0] as HTMLDivElement;
-
-// Initialize variables
-let num: number = 0;
-let questionsData: TriviaQuestion[] | null = null;
-
+// *
+// *
+// *
+function onStartQuizz() {
+  spans.style.opacity = "1";
+  formSubmit.style.display = "none"; // Hide form after submission
+  loadingGame.style.display = "block"; // Show loading
+}
+// *
+// *
+// *
 // Event listener for form submission
 formSubmit.addEventListener("submit", async function (e) {
   num = 0;
   e.preventDefault();
-  formSubmit.style.display = "none"; // Hide form after submission
-  loadingGame.style.display = "block"; // Show loading
+  onStartQuizz();
 
   // Get selected category, number of questions, and difficulty
   let getCategory: string | undefined =
@@ -134,60 +158,109 @@ formSubmit.addEventListener("submit", async function (e) {
     getCategory || "",
     getQuestionsDifficulty
   );
+  //
   questionsData = theDATA?.results ?? []; // Store fetched questions data
+  //
+  console.log(questionsData);
   if (questionsData.length > 0) {
     quizForm.style.display = "block"; // Show submission
+    const num = questionsData.length;
+    const numArray = Array.from({ length: num });
+    numArray.forEach(() => {
+      const span = document.createElement("span");
+      span.classList.add("sp");
+      spans.appendChild(span);
+    });
     displayQuestion(); // Display the first question
   }
   // console.log(questionsData);
 });
+// *
+// *
+// *
+function shuffleArray(array: string[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+// *
+// *
+// *
+function resetGame() {
+  spans.classList.add("scale-spans");
+  quizForm.style.display = "none";
+  playAgain.style.display = "block";
+  questionDiv.innerHTML = "GAME IS.....O V E R"; // Clear previous question
+  answerOptionsDiv.innerHTML = ""; // Clear previous answers
 
+  setTimeout(() => {
+    spans.style.opacity = "0";
+    setTimeout(() => {
+      spans.classList.remove("scale-spans");
+    }, 1000);
+  }, 2000);
+}
+// *
+// *
+// *
 // Function to display a question
 function displayQuestion(): void {
   if (questionsData && questionsData.length > num) {
-    // Get question and answers for current question
     const getQuestion = questionsData[num].question;
     const getAnswers: string[] = [
       ...questionsData[num].incorrect_answers,
       questionsData[num].correct_answer,
     ];
-    // Display question and answers
+
+    //After shuffel
+    let shuveldAnswers = shuffleArray(getAnswers);
+
+    // If game renderd display:none Loading
     if (answerOptionsDiv) {
       loadingGame.style.display = "none";
     }
-    appendQandA(getQuestion, getAnswers);
-    console.log(questionsData.length);
-    console.log(num);
-  } else if (questionsData.length === 0) {
-    // QAContainer.textContent = `<h1>GAME IS.....O V E R</h1>`;
+
+    appendQandA(getQuestion, shuveldAnswers);
+  } else if (questionsData?.length === 0) {
     questionDiv.innerHTML = "Error"; // Clear previous question
   } else {
-    quizForm.style.display = "none";
-    playAgain.style.display = "block";
-    questionDiv.innerHTML = "GAME IS.....O V E R"; // Clear previous question
-    answerOptionsDiv.innerHTML = ""; // Clear previous answers
+    resetGame();
   }
 }
-
+// *
+// *
+// *
+function decodeHTMLEntities(text: string) {
+  const element = document.createElement("div");
+  element.innerHTML = text;
+  return element.textContent || element.innerText;
+}
+// *
+// *
+// *
 // Function to append question and answers to DOM
-function appendQandA(question, answers) {
+function appendQandA(question: string, answers: string[]) {
   questionDiv.innerHTML = ""; // Clear previous question
   answerOptionsDiv.innerHTML = ""; // Clear previous answers
 
   // Append question to DOM
-  questionDiv.innerHTML = question;
+  questionDiv.innerHTML = decodeHTMLEntities(question); // GPT---
 
   // Append answers to DOM
   answers.forEach((option: string, index: any) => {
+    const decodedOption = decodeHTMLEntities(option); // GPT---
+
     const radioButton = document.createElement("input");
     radioButton.type = "radio";
     radioButton.id = `option${index + 1}`;
     radioButton.name = "sword"; // Assign name for radio button group
-    radioButton.value = option;
+    radioButton.value = option; // GPT---
 
     const label = document.createElement("label");
     label.htmlFor = `option${index + 1}`;
-    label.textContent = option;
+    label.textContent = decodedOption; // GPT---
 
     // answerOptionsDiv.appendChild();
 
@@ -200,23 +273,26 @@ function appendQandA(question, answers) {
     div.append(label);
     answerOptionsDiv.append(radioButton, div);
   });
-}
 
+  // ---------render span for correct and incoreeect answers-------------
+}
+// *
+// *
+// *
 // Event listener for random button click
 quizForm.onclick = (e): void => {
   e.preventDefault();
-  // Get the checked radio input element
-  const checkedRadio = document.querySelector('input[type="radio"]:checked');
-
-  // Get the next sibling element with the class .input-answer
-  const inputAnswer = checkedRadio.nextElementSibling;
-
-  // Set the background of the input-answer element to transparent
-  inputAnswer.style.background = "transparent";
+  styleAfterAnswer();
   nextQuestion();
 };
-const QAContainer = document.getElementById("q-a-container") as HTMLDivElement;
+// *
+// *
+// *
 function nextQuestion(): void {
+  let getSpans = document.querySelectorAll(
+    ".sp"
+  ) as NodeListOf<HTMLSpanElement>;
+
   // Get selected radio button
   const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
 
@@ -226,6 +302,25 @@ function nextQuestion(): void {
       ? questionsData[num].correct_answer
       : "";
 
+  // setTimeOut Function to go for Next Question and waite for animation
+
+  function nextQuestionSetTimeOut(result: string) {
+    setTimeout(() => {
+      if (getSpans) {
+        getSpans[num].classList.add(result);
+      }
+
+      setTimeout(() => {
+        num++; // Move to next question
+        displayQuestion(); // Display next question
+        answerOptionsDiv.style.opacity = "1";
+        questionDiv.style.transform = "translateX(0%)";
+      }, 1000);
+
+      answerOptionsDiv.style.opacity = "0";
+      questionDiv.style.transform = "translateX(-200%)";
+    }, 1000);
+  }
   // Check if an option is selected
   if (radioButtons.length > 0) {
     const selectedOption = radioButtons[0] as HTMLInputElement;
@@ -237,10 +332,7 @@ function nextQuestion(): void {
           "input-correct-answer-clicked"
         );
       }
-      setTimeout(() => {
-        num++; // Move to next question
-        displayQuestion(); // Display next question
-      }, 1000);
+      nextQuestionSetTimeOut("sp-correct");
     } else {
       console.log("no"); // Incorrect answer
       if (selectedOption.nextElementSibling) {
@@ -248,15 +340,41 @@ function nextQuestion(): void {
           "input-wrong-answer-clicked"
         );
       }
+      nextQuestionSetTimeOut("sp-incorrect");
     }
   }
 }
-
-playAgain.onclick = function () {
+// *
+// *
+// *
+function styleAfterAnswer() {
+  const checkedRadio = document.querySelector('input[type="radio"]:checked');
+  if (checkedRadio) {
+    const inputAnswer = checkedRadio.nextElementSibling as HTMLElement;
+    if (inputAnswer) {
+      inputAnswer.style.background = "transparent";
+    }
+  }
+}
+// *
+// *
+// *
+function cleanForNewGame() {
+  spans.innerHTML = "";
   formSubmit.style.display = "block";
   playAgain.style.display = "none";
   questionDiv.innerHTML = "";
+}
+// *
+// *
+// *
+playAgain.onclick = function () {
+  cleanForNewGame();
 };
+// *
+// *
+// *
+// ------------------Future Idea-------------------------
 // let timer = 0;
 // const displayTimer = document.getElementById("timer") as HTMLHeadingElement;
 
