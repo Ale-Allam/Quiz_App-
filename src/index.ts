@@ -4,6 +4,7 @@ const category = document.getElementById("category") as HTMLSelectElement;
 const formSubmit = document.getElementById("submitApp") as HTMLFormElement;
 const playAgain = document.getElementById("play-again") as HTMLButtonElement;
 const quizForm = document.getElementById("submit-answer") as HTMLButtonElement;
+const quizFormDisplay = document.getElementById("quizForm") as HTMLFormElement;
 const QAContainer = document.getElementById("q-a-container") as HTMLDivElement;
 const questionsNumber = document.getElementById(
   "questionsNumber"
@@ -135,11 +136,13 @@ populateCategories();
 function onStartQuizz() {
   spans.style.opacity = "1";
   formSubmit.style.display = "none"; // Hide form after submission
-  loadingGame.style.display = "block"; // Show loading
+  loadingGame.style.display = "block"; // Show loading// Show loading
+  // quizFormDisplay.style.display = "block"; // Show loading// Show loading
 }
 // *
 // *
 // *
+// quizForm.style.display = "none"; -------------------------------------------هنااااااااااااااااااااا الغلطططططططططط
 // Event listener for form submission
 formSubmit.addEventListener("submit", async function (e) {
   num = 0;
@@ -289,20 +292,36 @@ quizForm.onclick = (e): void => {
 // *
 // *
 function nextQuestion(): void {
-  let getSpans = document.querySelectorAll(
-    ".sp"
-  ) as NodeListOf<HTMLSpanElement>;
-
-  // Get selected radio button
-  const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
-
   // Get correct answer for current question
   const correctAnswer =
     questionsData && questionsData[num]
       ? questionsData[num].correct_answer
       : "";
 
+  // mark Correct Answer After Submit Question
+  let getAllAnswersInput = document.querySelectorAll(
+    'input[name="sword"]'
+  ) as NodeListOf<HTMLSpanElement>;
+  function markCorrectAnswerAfterSubmitQuestion() {
+    for (let i = 0; i < getAllAnswersInput.length; i++) {
+      const input = getAllAnswersInput[i] as HTMLInputElement;
+      if (input.value === correctAnswer) {
+        const inputId = getAllAnswersInput[i].id;
+        const label = document.querySelector(`label[for="${inputId}"]`);
+        if (label) {
+          (label as HTMLLabelElement).setAttribute(
+            "style",
+            "color: #00fe9b;text-shadow: 0px 0px 33px #02c435; text-decoration: underline;"
+          );
+        }
+      }
+    }
+  }
+
   // setTimeOut Function to go for Next Question and waite for animation
+  let getSpans = document.querySelectorAll(
+    ".sp"
+  ) as NodeListOf<HTMLSpanElement>;
 
   function nextQuestionSetTimeOut(result: string) {
     setTimeout(() => {
@@ -321,7 +340,11 @@ function nextQuestion(): void {
       questionDiv.style.transform = "translateX(-200%)";
     }, 1000);
   }
+
   // Check if an option is selected
+  // Get selected radio button
+  const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
+
   if (radioButtons.length > 0) {
     const selectedOption = radioButtons[0] as HTMLInputElement;
 
@@ -334,13 +357,13 @@ function nextQuestion(): void {
       }
       nextQuestionSetTimeOut("sp-correct");
     } else {
-      console.log("no"); // Incorrect answer
       if (selectedOption.nextElementSibling) {
         selectedOption.nextElementSibling.classList.add(
           "input-wrong-answer-clicked"
         );
       }
       nextQuestionSetTimeOut("sp-incorrect");
+      markCorrectAnswerAfterSubmitQuestion();
     }
   }
 }

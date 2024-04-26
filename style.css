@@ -90,6 +90,8 @@ body {
   box-shadow: -1px 0px 100px 70px #000623c7 inset, 0px 0px 20px 1px #00000085;
 }
 
+
+
 /* ::selection {
   background-color: #9C4104;
   color: gold;
@@ -166,6 +168,7 @@ input[type=number] {
 
 .quizForm {
   padding: 20px;
+  /* display: none; */
 }
 
 .q-a-container {
@@ -173,7 +176,7 @@ input[type=number] {
   /* flex-direction: column; */
   justify-content: space-between;
   align-items: center;
-  gap: 40px;
+  /* gap: 40px; */
 }
 
 .question-request {
@@ -435,22 +438,33 @@ option {
   .app-container {
     padding-bottom: 30px;
     /* min-height: 550px; */
+    min-height: 100vh;
+
+  }
+
+  .control-quizform {
+    /* flex-direction: unset; */
+    /* justify-content: unset;
+    align-items: unset; */
   }
 
   .q-a-container {
     flex-direction: column;
+    height: 100%;
   }
 
   .question-request {
     width: 100%;
     font-weight: 500;
     font-size: 20px;
+    flex: 1;
   }
 
   .input-answer {
     font-size: 18px;
     font-weight: 400;
     letter-spacing: 1.5px;
+    flex: 0;
   }
 
   .answers-btn-container {

@@ -12,6 +12,7 @@ const category = document.getElementById("category");
 const formSubmit = document.getElementById("submitApp");
 const playAgain = document.getElementById("play-again");
 const quizForm = document.getElementById("submit-answer");
+const quizFormDisplay = document.getElementById("quizForm");
 const QAContainer = document.getElementById("q-a-container");
 const questionsNumber = document.getElementById("questionsNumber");
 const questionDifficulty = document.getElementById("defcult");
@@ -180,11 +181,23 @@ quizForm.onclick = (e) => {
     nextQuestion();
 };
 function nextQuestion() {
-    let getSpans = document.querySelectorAll(".sp");
-    const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
     const correctAnswer = questionsData && questionsData[num]
         ? questionsData[num].correct_answer
         : "";
+    let getAllAnswersInput = document.querySelectorAll('input[name="sword"]');
+    function markCorrectAnswerAfterSubmitQuestion() {
+        for (let i = 0; i < getAllAnswersInput.length; i++) {
+            const input = getAllAnswersInput[i];
+            if (input.value === correctAnswer) {
+                const inputId = getAllAnswersInput[i].id;
+                const label = document.querySelector(`label[for="${inputId}"]`);
+                if (label) {
+                    label.setAttribute("style", "color: #00fe9b;text-shadow: 0px 0px 33px #02c435; text-decoration: underline;");
+                }
+            }
+        }
+    }
+    let getSpans = document.querySelectorAll(".sp");
     function nextQuestionSetTimeOut(result) {
         setTimeout(() => {
             if (getSpans) {
@@ -200,6 +213,7 @@ function nextQuestion() {
             questionDiv.style.transform = "translateX(-200%)";
         }, 1000);
     }
+    const radioButtons = document.querySelectorAll('input[name="sword"]:checked');
     if (radioButtons.length > 0) {
         const selectedOption = radioButtons[0];
         if (correctAnswer === selectedOption.value) {
@@ -209,11 +223,11 @@ function nextQuestion() {
             nextQuestionSetTimeOut("sp-correct");
         }
         else {
-            console.log("no");
             if (selectedOption.nextElementSibling) {
                 selectedOption.nextElementSibling.classList.add("input-wrong-answer-clicked");
             }
             nextQuestionSetTimeOut("sp-incorrect");
+            markCorrectAnswerAfterSubmitQuestion();
         }
     }
 }
