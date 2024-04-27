@@ -3,6 +3,9 @@
 const category = document.getElementById("category") as HTMLSelectElement;
 const formSubmit = document.getElementById("submitApp") as HTMLFormElement;
 const playAgain = document.getElementById("play-again") as HTMLButtonElement;
+const playAgainForm = document.getElementById(
+  "play-again-form"
+) as HTMLFormElement;
 const quizForm = document.getElementById("submit-answer") as HTMLButtonElement;
 const quizFormDisplay = document.getElementById("quizForm") as HTMLFormElement;
 const QAContainer = document.getElementById("q-a-container") as HTMLDivElement;
@@ -30,6 +33,10 @@ const spansCorrectIncorrect = document.getElementById(
   "question-spans-container"
 ) as HTMLDivElement;
 const spans = document.getElementById("spans") as HTMLDivElement;
+//
+const quizPercentage = document.getElementById(
+  "quiz-percentage"
+) as HTMLDivElement;
 
 // Define TriviaQuestion interface
 interface TriviaQuestion {
@@ -45,7 +52,9 @@ interface TriviaQuestion {
 let gameOverOrNot: boolean = false;
 // Initialize variables
 let num: number = 0;
+let percentageNumber: number = 0;
 let questionsData: TriviaQuestion[] | null = null;
+const resultArray: boolean[] = [];
 
 // *
 // *
@@ -73,8 +82,7 @@ async function fetchQuestions(
       throw new Error("Parameter is not a number!");
     }
   } catch (error) {
-    // Handle errors
-    console.error("Error fetching data:", error);
+    quizFormDisplay.innerHTML = `<h1>GAME CRASHED</h1>`;
     return null;
   }
 }
@@ -100,8 +108,7 @@ async function fetchCategories(): Promise<Category[]> {
     const data = await response.json();
     return data.trivia_categories;
   } catch (error) {
-    // Handle errors
-    console.error("There was a problem with the fetch operation:", error);
+    formSubmit.innerHTML = "<h1>Sorry Come Later</h1>";
     return [];
   }
 }
@@ -123,8 +130,7 @@ async function populateCategories() {
       category.appendChild(optionElement);
     });
   } catch (error) {
-    // Handle errors
-    console.error("Error while populating categories:", error);
+    formSubmit.innerHTML = "<h1>Sorry Come Later</h1>";
   }
 }
 
@@ -164,7 +170,6 @@ formSubmit.addEventListener("submit", async function (e) {
   //
   questionsData = theDATA?.results ?? []; // Store fetched questions data
   //
-  console.log(questionsData);
   if (questionsData.length > 0) {
     quizForm.style.display = "block"; // Show submission
     const num = questionsData.length;
@@ -177,9 +182,8 @@ formSubmit.addEventListener("submit", async function (e) {
     setTimeout(() => {
       quizFormDisplay.style.display = "block";
       displayQuestion();
-    }, 3000); // Display the first question
+    }, 1500); // Display the first question
   }
-  // console.log(questionsData);
 });
 // *
 // *
@@ -197,11 +201,9 @@ function shuffleArray(array: string[]) {
 function resetGame() {
   spans.classList.add("scale-spans");
   quizForm.style.display = "none";
-  playAgain.style.display = "block";
-  // questionDiv.innerHTML = "GAME IS.....O V E R"; // Clear previous question
-  // answerOptionsDiv.innerHTML = ""; // Clear previous answers
-
+  playAgainForm.style.display = "block";
   quizFormDisplay.style.display = "none";
+
   setTimeout(() => {
     spans.style.opacity = "0";
     setTimeout(() => {
@@ -233,6 +235,8 @@ function displayQuestion(): void {
   } else if (questionsData?.length === 0) {
     questionDiv.innerHTML = "Error"; // Clear previous question
   } else {
+    // appendPersentage
+    calculateTruePercentage(resultArray);
     resetGame();
   }
 }
@@ -292,6 +296,7 @@ quizForm.onclick = (e): void => {
   styleAfterAnswer();
   nextQuestion();
 };
+
 // *
 // *
 // *
@@ -359,6 +364,8 @@ function nextQuestion(): void {
           "input-correct-answer-clicked"
         );
       }
+      //
+      evaluateAnswerAndPushToArray(true);
       nextQuestionSetTimeOut("sp-correct");
     } else {
       if (selectedOption.nextElementSibling) {
@@ -366,6 +373,8 @@ function nextQuestion(): void {
           "input-wrong-answer-clicked"
         );
       }
+      //
+      evaluateAnswerAndPushToArray(false);
       nextQuestionSetTimeOut("sp-incorrect");
       markCorrectAnswerAfterSubmitQuestion();
     }
@@ -386,21 +395,62 @@ function styleAfterAnswer() {
 // *
 // *
 // *
-function cleanForNewGame() {
-  spans.innerHTML = "";
-  formSubmit.style.display = "block";
-  playAgain.style.display = "none";
-  questionDiv.innerHTML = "";
+function evaluateAnswerAndPushToArray(isCorrect: boolean): boolean[] {
+  // Push the boolean value into the array
+  resultArray.push(isCorrect);
+  // Return the array
+  return resultArray;
 }
 // *
 // *
 // *
-playAgain.onclick = function () {
+// From ChatGPT
+function calculateTruePercentage(arr: boolean[]): void {
+  // Count the number of true values in the array
+  const trueCount = resultArray.filter((value) => value === true).length;
+  // Calculate the percentage
+  const truePercentage = Math.floor((trueCount / arr.length) * 100);
+  const intervalID = setInterval(checkNumber, 15);
+
+  function checkNumber() {
+    if (percentageNumber >= truePercentage) {
+      clearInterval(intervalID);
+    }
+    if (truePercentage === 0) {
+      quizPercentage.innerHTML = `${0}% 👾`;
+    } else {
+      quizPercentage.innerHTML = `${percentageNumber}%`;
+      percentageNumber++;
+    }
+  }
+
+  // Return the percentage
+}
+
+// *
+// *
+// *
+function cleanForNewGame() {
+  spans.innerHTML = "";
+  formSubmit.style.display = "block";
+  playAgainForm.style.display = "none";
+  questionDiv.innerHTML = "";
+  quizPercentage.innerHTML = "";
+  percentageNumber = 0;
+}
+// *
+// *
+// *
+
+playAgainForm.addEventListener("submit", (e) => {
+  e.preventDefault();
   cleanForNewGame();
-};
+  resultArray.length = 0;
+});
 // *
 // *
 // *
+
 // ------------------Future Idea-------------------------
 // let timer = 0;
 // const displayTimer = document.getElementById("timer") as HTMLHeadingElement;
@@ -422,3 +472,7 @@ playAgain.onclick = function () {
 // setTimeout(() => {
 //   clearInterval(intervalId); // Stop the interval after 10 seconds
 // }, 10000);
+// function callInConsol() {
+//   console.log("COOL");
+// }
+// setInterval(callInConsol, 200);

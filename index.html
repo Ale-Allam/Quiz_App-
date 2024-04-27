@@ -12,7 +12,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
   <!-- logo -->
-  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <!-- <link rel="icon" href="logo.svg" type="image/svg+xml"> -->
+  <link rel="icon" href="favorit-quiz-logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="favorit-quiz-logo.png" type="image/x-icon">
 </head>
 <style>
 
@@ -45,7 +47,7 @@
         </div>
 
         <div class="select-questions-number">
-          <input type="number" id="questionsNumber" value="1" min="1" max="15" step="1">
+          <input type="number" id="questionsNumber" value="5" min="5" max="15" step="1">
 
         </div>
         <button class="start-game-button" type="submit">
@@ -63,7 +65,15 @@
           </div>
         </div>
       </form>
-      <button class="play-again-button" id="play-again">Play Again!</button>
+
+      <form class="play-again-form" action="" id="play-again-form">
+        <div class="form-container">
+          <div id="quiz-percentage" class="quiz-percentage">
+          </div>
+          <button class="play-again-button" id="play-again">Play Again!</button>
+        </div>
+      </form>
+
       <div class="loading"></div>
     </div>
   </section>

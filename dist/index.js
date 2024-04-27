@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const category = document.getElementById("category");
 const formSubmit = document.getElementById("submitApp");
 const playAgain = document.getElementById("play-again");
+const playAgainForm = document.getElementById("play-again-form");
 const quizForm = document.getElementById("submit-answer");
 const quizFormDisplay = document.getElementById("quizForm");
 const QAContainer = document.getElementById("q-a-container");
@@ -21,9 +22,12 @@ const questionDiv = document.getElementById("question-request");
 const loadingGame = document.getElementsByClassName("loading")[0];
 const spansCorrectIncorrect = document.getElementById("question-spans-container");
 const spans = document.getElementById("spans");
+const quizPercentage = document.getElementById("quiz-percentage");
 let gameOverOrNot = false;
 let num = 0;
+let percentageNumber = 0;
 let questionsData = null;
+const resultArray = [];
 function fetchQuestions(amount, category = "9", difficulty) {
     return __awaiter(this, void 0, void 0, function* () {
         const apiUrl = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=multiple`;
@@ -41,7 +45,7 @@ function fetchQuestions(amount, category = "9", difficulty) {
             }
         }
         catch (error) {
-            console.error("Error fetching data:", error);
+            quizFormDisplay.innerHTML = `<h1>GAME CRASHED</h1>`;
             return null;
         }
     });
@@ -57,7 +61,7 @@ function fetchCategories() {
             return data.trivia_categories;
         }
         catch (error) {
-            console.error("There was a problem with the fetch operation:", error);
+            formSubmit.innerHTML = "<h1>Sorry Come Later</h1>";
             return [];
         }
     });
@@ -75,7 +79,7 @@ function populateCategories() {
             });
         }
         catch (error) {
-            console.error("Error while populating categories:", error);
+            formSubmit.innerHTML = "<h1>Sorry Come Later</h1>";
         }
     });
 }
@@ -96,7 +100,6 @@ formSubmit.addEventListener("submit", function (e) {
         let getQuestionsDifficulty = questionDifficulty.value;
         const theDATA = yield fetchQuestions(getNumberOfQuestions, getCategory || "", getQuestionsDifficulty);
         questionsData = (_a = theDATA === null || theDATA === void 0 ? void 0 : theDATA.results) !== null && _a !== void 0 ? _a : [];
-        console.log(questionsData);
         if (questionsData.length > 0) {
             quizForm.style.display = "block";
             const num = questionsData.length;
@@ -109,7 +112,7 @@ formSubmit.addEventListener("submit", function (e) {
             setTimeout(() => {
                 quizFormDisplay.style.display = "block";
                 displayQuestion();
-            }, 3000);
+            }, 1500);
         }
     });
 });
@@ -123,7 +126,7 @@ function shuffleArray(array) {
 function resetGame() {
     spans.classList.add("scale-spans");
     quizForm.style.display = "none";
-    playAgain.style.display = "block";
+    playAgainForm.style.display = "block";
     quizFormDisplay.style.display = "none";
     setTimeout(() => {
         spans.style.opacity = "0";
@@ -149,6 +152,7 @@ function displayQuestion() {
         questionDiv.innerHTML = "Error";
     }
     else {
+        calculateTruePercentage(resultArray);
         resetGame();
     }
 }
@@ -222,12 +226,14 @@ function nextQuestion() {
             if (selectedOption.nextElementSibling) {
                 selectedOption.nextElementSibling.classList.add("input-correct-answer-clicked");
             }
+            evaluateAnswerAndPushToArray(true);
             nextQuestionSetTimeOut("sp-correct");
         }
         else {
             if (selectedOption.nextElementSibling) {
                 selectedOption.nextElementSibling.classList.add("input-wrong-answer-clicked");
             }
+            evaluateAnswerAndPushToArray(false);
             nextQuestionSetTimeOut("sp-incorrect");
             markCorrectAnswerAfterSubmitQuestion();
         }
@@ -242,13 +248,38 @@ function styleAfterAnswer() {
         }
     }
 }
+function evaluateAnswerAndPushToArray(isCorrect) {
+    resultArray.push(isCorrect);
+    return resultArray;
+}
+function calculateTruePercentage(arr) {
+    const trueCount = resultArray.filter((value) => value === true).length;
+    const truePercentage = Math.floor((trueCount / arr.length) * 100);
+    const intervalID = setInterval(checkNumber, 15);
+    function checkNumber() {
+        if (percentageNumber >= truePercentage) {
+            clearInterval(intervalID);
+        }
+        if (truePercentage === 0) {
+            quizPercentage.innerHTML = `${0}% 👾`;
+        }
+        else {
+            quizPercentage.innerHTML = `${percentageNumber}%`;
+            percentageNumber++;
+        }
+    }
+}
 function cleanForNewGame() {
     spans.innerHTML = "";
     formSubmit.style.display = "block";
-    playAgain.style.display = "none";
+    playAgainForm.style.display = "none";
     questionDiv.innerHTML = "";
+    quizPercentage.innerHTML = "";
+    percentageNumber = 0;
 }
-playAgain.onclick = function () {
+playAgainForm.addEventListener("submit", (e) => {
+    e.preventDefault();
     cleanForNewGame();
-};
+    resultArray.length = 0;
+});
 //# sourceMappingURL=index.js.map
