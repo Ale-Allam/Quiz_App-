@@ -20,48 +20,52 @@
 </style>
 
 <body>
-  <section class="app-container control-quizform">
-    <div class="spans" id="spans">
+  <section class=" control-quizform container">
+    <!-- <h2 id="timer"></h2> -->
+    <header class="header">
+      <div class="spans" id="spans"></div>
+      <div class="logo">M<sup>M</sup>Q</div>
+    </header>
 
-    </div>
-    <h2 id="timer"></h2>
-    <form class="questions-app-start" id="submitApp" action="">
-      <div class="select-category">
-        <!-- <label for="category">Questions category:</label> -->
-        <select id="category" name="category">
-        </select>
-      </div>
-
-      <div class="select-defcult">
-        <!-- <label for="defcult">Defcult:</label> -->
-        <select id="defcult" name="defcult">
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-      </div>
-
-      <div class="select-questions-number">
-        <input type="number" id="questionsNumber" value="5" min="5" max="15" step="5">
-
-      </div>
-      <button class="start-game-button" type="submit">
-        Start
-      </button>
-    </form>
-
-
-    <form class="quizForm" id="quizForm">
-      <div class="q-a-container" id="q-a-container">
-        <p class="question-request" id="question-request"></p>
-        <div class="answers-btn-container">
-          <div class="answer-options" id="answerOptions"></div>
-          <button class="submit-answer" id="submit-answer">Submit Answer</button>
+    <div class="app-container">
+      <form class="questions-app-start" id="submitApp" action="">
+        <div class="select-category">
+          <!-- <label for="category">Questions category:</label> -->
+          <select id="category" name="category">
+          </select>
         </div>
-      </div>
-    </form>
-    <button class="play-again-button" id="play-again">Play Again!</button>
-    <div class="loading"></div>
+
+        <div class="select-defcult">
+          <!-- <label for="defcult">Defcult:</label> -->
+          <select id="defcult" name="defcult">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+
+        <div class="select-questions-number">
+          <input type="number" id="questionsNumber" value="1" min="1" max="15" step="1">
+
+        </div>
+        <button class="start-game-button" type="submit">
+          Start
+        </button>
+      </form>
+
+
+      <form class="quizForm" id="quizForm">
+        <div class="q-a-container" id="q-a-container">
+          <p class="question-request" id="question-request"></p>
+          <div class="answers-btn-container">
+            <div class="answer-options" id="answerOptions"></div>
+            <button class="submit-answer" id="submit-answer">Submit Answer</button>
+          </div>
+        </div>
+      </form>
+      <button class="play-again-button" id="play-again">Play Again!</button>
+      <div class="loading"></div>
+    </div>
   </section>
   <script src="dist/index.js"></script>
 

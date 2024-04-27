@@ -106,7 +106,10 @@ formSubmit.addEventListener("submit", function (e) {
                 span.classList.add("sp");
                 spans.appendChild(span);
             });
-            displayQuestion();
+            setTimeout(() => {
+                quizFormDisplay.style.display = "block";
+                displayQuestion();
+            }, 3000);
         }
     });
 });
@@ -121,8 +124,7 @@ function resetGame() {
     spans.classList.add("scale-spans");
     quizForm.style.display = "none";
     playAgain.style.display = "block";
-    questionDiv.innerHTML = "GAME IS.....O V E R";
-    answerOptionsDiv.innerHTML = "";
+    quizFormDisplay.style.display = "none";
     setTimeout(() => {
         spans.style.opacity = "0";
         setTimeout(() => {

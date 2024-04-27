@@ -137,7 +137,7 @@ function onStartQuizz() {
   spans.style.opacity = "1";
   formSubmit.style.display = "none"; // Hide form after submission
   loadingGame.style.display = "block"; // Show loading// Show loading
-  // quizFormDisplay.style.display = "block"; // Show loading// Show loading
+  // Show loading// Show loading
 }
 // *
 // *
@@ -174,7 +174,10 @@ formSubmit.addEventListener("submit", async function (e) {
       span.classList.add("sp");
       spans.appendChild(span);
     });
-    displayQuestion(); // Display the first question
+    setTimeout(() => {
+      quizFormDisplay.style.display = "block";
+      displayQuestion();
+    }, 3000); // Display the first question
   }
   // console.log(questionsData);
 });
@@ -195,9 +198,10 @@ function resetGame() {
   spans.classList.add("scale-spans");
   quizForm.style.display = "none";
   playAgain.style.display = "block";
-  questionDiv.innerHTML = "GAME IS.....O V E R"; // Clear previous question
-  answerOptionsDiv.innerHTML = ""; // Clear previous answers
+  // questionDiv.innerHTML = "GAME IS.....O V E R"; // Clear previous question
+  // answerOptionsDiv.innerHTML = ""; // Clear previous answers
 
+  quizFormDisplay.style.display = "none";
   setTimeout(() => {
     spans.style.opacity = "0";
     setTimeout(() => {
