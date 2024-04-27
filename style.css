@@ -129,12 +129,13 @@ body {
 
 .scale-spans {
   left: 50%;
-  top: 25%;
-  transform: translateX(-25%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
-  scale: 2;
+  scale: 1;
   transition: .9s;
 }
+
 
 .spans .sp {
   width: 15px;
@@ -533,10 +534,20 @@ option {
   }
 
   .questions-app-start {
-    width: 340px;
+    width: fit-content;
   }
 
   .submit-answer {
     margin: 20px auto;
+  }
+
+  .spans,
+  .scale-spans {
+    position: absolute;
+    top: 106%;
+    left: 0px;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
   }
 }
