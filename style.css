@@ -90,7 +90,7 @@ body {
   position: relative;
   padding: 0;
   margin: 0;
-  background-image: url("/blur-background.png");
+  background-image: url("image/blur-background.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
