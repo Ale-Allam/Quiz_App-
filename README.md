@@ -43,7 +43,7 @@ Want to beat your score or try a different category? Hit the "Play Again" button
 
 - HTML
 - CSS
-- JavaScript
+- TypeScript
 
 ## Credits
 
@@ -52,7 +52,3 @@ Want to beat your score or try a different category? Hit the "Play Again" button
 ## Contributing
 
 Contributions are welcome! If you have any suggestions or improvements, feel free to open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
