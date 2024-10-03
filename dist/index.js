@@ -28,8 +28,8 @@ let num = 0;
 let percentageNumber = 0;
 let questionsData = null;
 const resultArray = [];
-function fetchQuestions(amount, category = "9", difficulty) {
-    return __awaiter(this, void 0, void 0, function* () {
+function fetchQuestions(amount_1) {
+    return __awaiter(this, arguments, void 0, function* (amount, category = "9", difficulty) {
         const apiUrl = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=multiple`;
         try {
             const response = yield fetch(apiUrl);
@@ -90,8 +90,8 @@ function onStartQuizz() {
     loadingGame.style.display = "block";
 }
 formSubmit.addEventListener("submit", function (e) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         num = 0;
         e.preventDefault();
         onStartQuizz();

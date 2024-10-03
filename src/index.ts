@@ -67,7 +67,6 @@ async function fetchQuestions(
 ): Promise<{ results: TriviaQuestion[] } | null> {
   // API URL based on parameters
   const apiUrl = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=multiple`;
-  // https://opentdb.com/api.php?amount=10&difficulty=hard&type=multiple
 
   try {
     // Fetch data from API
@@ -148,7 +147,7 @@ function onStartQuizz() {
 // *
 // *
 // *
-// quizForm.style.display = "none"; -------------------------------------------هنااااااااااااااااااااا الغلطططططططططط
+// quizForm.style.display = "none";
 // Event listener for form submission
 formSubmit.addEventListener("submit", async function (e) {
   num = 0;
@@ -447,32 +446,3 @@ playAgainForm.addEventListener("submit", (e) => {
   cleanForNewGame();
   resultArray.length = 0;
 });
-// *
-// *
-// *
-
-// ------------------Future Idea-------------------------
-// let timer = 0;
-// const displayTimer = document.getElementById("timer") as HTMLHeadingElement;
-
-// // Update the timer display
-
-// // Interval handler function
-// function intervalHandler() {
-//   // Increment the timer
-//   timer++;
-//   // Update the timer display
-//   displayTimer.innerHTML = timer.toString();
-// }
-
-// // Set interval to call the intervalHandler function every second (1000 milliseconds)
-// const intervalId = setInterval(intervalHandler, 1000);
-
-// // Example of where to stop the interval
-// setTimeout(() => {
-//   clearInterval(intervalId); // Stop the interval after 10 seconds
-// }, 10000);
-// function callInConsol() {
-//   console.log("COOL");
-// }
-// setInterval(callInConsol, 200);
